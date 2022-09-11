@@ -27,6 +27,7 @@ const Game = (() => {
 
   const takeTurn = (e) => {
     if (e.target.innerHTML === "") {
+      console.log(e.target);
       e.target.textContent = activePlayer.playerSymbol;
       e.target.style.backgroundImage = `url('./img/${activePlayer.playerSymbol}mark.png')`;
       let PushIndex = e.target.getAttribute("index");
@@ -51,17 +52,27 @@ const Game = (() => {
     });
   };
 
+  const _declareWinner = () => {
+    console.log(_checkRows());
+    if (_checkRows) {
+      console.log("Kazkas laimejo");
+    }
+  };
+
+  const _checkIfDraw = () => {
+    return gameBoard.every((i) => i != "");
+  };
+
   const _checkRows = () => {
     row1 = [gameBoard[0], gameBoard[1], gameBoard[2]];
     row2 = [gameBoard[3], gameBoard[4], gameBoard[5]];
     row3 = [gameBoard[6], gameBoard[7], gameBoard[8]];
 
     allRows = [row1, row2, row3];
-    console.log(allRows);
 
     allRows.forEach((row) => {
       if (row.every((i) => i == "x") || row.every((i) => i == "o")) {
-        console.log("linija");
+        return true;
       }
     });
   };
@@ -94,9 +105,11 @@ const Game = (() => {
   };
 
   const _checkWinner = () => {
+    _checkIfDraw();
     _checkColumns();
     _checkRows();
     _checkDiagonal();
+    _declareWinner();
   };
 
   return {

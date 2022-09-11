@@ -49,6 +49,7 @@ img {
 }
 
 .cell {
+  color: transparent;
   height: 150px;
   width: 150px;
   background-color: beige;
