@@ -15,6 +15,7 @@ const Game = (() => {
   const board = document.getElementById("board");
   const gameBoard = ["", "", "", "", "", "", "", "", ""];
   let activePlayer = player1;
+  let winner;
 
   const setActivePlayer = () => {
     if (activePlayer == player1) {
@@ -27,13 +28,13 @@ const Game = (() => {
 
   const takeTurn = (e) => {
     if (e.target.innerHTML === "") {
-      console.log(e.target);
+      // console.log(e.target);
       e.target.textContent = activePlayer.playerSymbol;
       e.target.style.backgroundImage = `url('./img/${activePlayer.playerSymbol}mark.png')`;
       let PushIndex = e.target.getAttribute("index");
       gameBoard.splice(PushIndex, 1, activePlayer.playerSymbol);
-      setActivePlayer();
       _checkWinner();
+      setActivePlayer();
     } else if (e.target.innerHTML != "") {
       alert("Choose a different tile");
     }
@@ -52,10 +53,20 @@ const Game = (() => {
     });
   };
 
-  const _declareWinner = () => {
-    console.log(_checkRows());
-    if (_checkRows) {
-      console.log("Kazkas laimejo");
+  // const _declareWinner = () => {
+  //   console.log(_checkRows());
+  //   if (_checkRows) {
+  //     console.log("Kazkas laimejo");
+  //   }
+  // };
+
+  const _setWinner = (three) => {
+    if (three.every((i) => i == "x")) {
+      winner = activePlayer.playerName;
+      return winner;
+    } else if (three.every((i) => i == "o")) {
+      winner = activePlayer.playerName;
+      return winner;
     }
   };
 
@@ -70,11 +81,7 @@ const Game = (() => {
 
     allRows = [row1, row2, row3];
 
-    allRows.forEach((row) => {
-      if (row.every((i) => i == "x") || row.every((i) => i == "o")) {
-        return true;
-      }
-    });
+    return allRows.some(_setWinner);
   };
 
   const _checkColumns = () => {
@@ -84,11 +91,7 @@ const Game = (() => {
 
     allCols = [col1, col2, col3];
 
-    allCols.forEach((col) => {
-      if (col.every((i) => i == "x") || col.every((i) => i == "o")) {
-        console.log("stulpelis");
-      }
-    });
+    return allCols.some(_setWinner);
   };
 
   const _checkDiagonal = () => {
@@ -97,19 +100,20 @@ const Game = (() => {
 
     allDiags = [diag1, diag2];
 
-    allDiags.forEach((diag) => {
-      if (diag.every((i) => i == "x") || diag.every((i) => i == "o")) {
-        console.log("diagnole");
-      }
-    });
+    allDiags.some(_setWinner);
   };
 
   const _checkWinner = () => {
-    _checkIfDraw();
+    // console.log(_checkIfDraw());
     _checkColumns();
     _checkRows();
     _checkDiagonal();
-    _declareWinner();
+    if (winner == "p1") {
+      alert("Player 1 is a winner");
+    } else if (winner == "p2") {
+      alert("Player 2 is a winner");
+    }
+    // _declareWinner();
   };
 
   return {
