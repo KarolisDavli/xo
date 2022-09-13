@@ -86,13 +86,16 @@ const Game = (() => {
   };
 
   const _announceWinner = () => {
-    if (winner == "p1") {
-      alert("Player 1 is a winner");
-    } else if (winner == "p2") {
-      alert("Player 2 is a winner");
-    } else if (_checkIfDraw() == true) {
-      alert("Draw");
-    }
+    const announcementText = document.createElement("h1");
+    announcementText.textContent = `${winner} bitch`;
+    app.append(announcementText);
+    // if (winner == "p1") {
+    //   app.append(announcementText);
+    // } else if (winner == "p2") {
+    //   alert("Player 2 is a winner");
+    // } else if (_checkIfDraw() == true) {
+    //   alert("Draw");
+    // }
   };
 
   const _checkIfDraw = () => {
@@ -127,7 +130,7 @@ const Game = (() => {
     _checkColumns();
     _checkRows();
     _checkDiagonal();
-    _announceWinner();
+    winner != undefined && _announceWinner();
   };
 
   return {
