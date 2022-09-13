@@ -13,9 +13,44 @@ const Game = (() => {
   const player2 = Player("p2", "o");
 
   const board = document.getElementById("board");
-  const gameBoard = ["", "", "", "", "", "", "", "", ""];
+  const app = document.getElementById("app");
+
+  let gameBoard = ["", "", "", "", "", "", "", "", ""];
   let activePlayer = player1;
   let winner;
+
+  const renderGameBoard = () => {
+    let count = 0;
+    renderResetButton();
+    gameBoard.map((cell) => {
+      const square = document.createElement("div");
+      square.setAttribute("index", count);
+      square.classList.add("cell");
+      square.addEventListener("click", takeTurn);
+      square.append(cell);
+      board.append(square);
+      count++;
+    });
+  };
+
+  const renderResetButton = () => {
+    const resetButton = document.createElement("button");
+    resetButton.textContent = "Reset Game";
+    resetButton.classList.add("btn");
+    resetButton.addEventListener("click", resetGame);
+    app.append(resetButton);
+  };
+
+  const resetGame = () => {
+    gameBoard = ["", "", "", "", "", "", "", "", ""];
+    activePlayer = player1;
+    winner = "";
+    const tile = document.getElementsByClassName("cell");
+    const allTiles = [...tile];
+    console.log(allTiles);
+    allTiles.map((tile) => tile.removeAttribute("style"));
+    allTiles.map((tile) => (tile.textContent = ""));
+  };
 
   const setActivePlayer = () => {
     if (activePlayer == player1) {
@@ -40,33 +75,23 @@ const Game = (() => {
     }
   };
 
-  const renderGameBoard = () => {
-    let count = 0;
-    gameBoard.map((cell) => {
-      const square = document.createElement("div");
-      square.setAttribute("index", count);
-      square.classList.add("cell");
-      square.addEventListener("click", takeTurn);
-      square.append(cell);
-      board.append(square);
-      count++;
-    });
+  const _setWinner = (threeInARow) => {
+    if (threeInARow.every((i) => i == "x")) {
+      winner = activePlayer.playerName;
+      return winner;
+    } else if (threeInARow.every((i) => i == "o")) {
+      winner = activePlayer.playerName;
+      return winner;
+    }
   };
 
-  // const _declareWinner = () => {
-  //   console.log(_checkRows());
-  //   if (_checkRows) {
-  //     console.log("Kazkas laimejo");
-  //   }
-  // };
-
-  const _setWinner = (three) => {
-    if (three.every((i) => i == "x")) {
-      winner = activePlayer.playerName;
-      return winner;
-    } else if (three.every((i) => i == "o")) {
-      winner = activePlayer.playerName;
-      return winner;
+  const _announceWinner = () => {
+    if (winner == "p1") {
+      alert("Player 1 is a winner");
+    } else if (winner == "p2") {
+      alert("Player 2 is a winner");
+    } else if (_checkIfDraw() == true) {
+      alert("Draw");
     }
   };
 
@@ -78,9 +103,7 @@ const Game = (() => {
     row1 = [gameBoard[0], gameBoard[1], gameBoard[2]];
     row2 = [gameBoard[3], gameBoard[4], gameBoard[5]];
     row3 = [gameBoard[6], gameBoard[7], gameBoard[8]];
-
     allRows = [row1, row2, row3];
-
     return allRows.some(_setWinner);
   };
 
@@ -88,32 +111,23 @@ const Game = (() => {
     col1 = [gameBoard[0], gameBoard[3], gameBoard[6]];
     col2 = [gameBoard[1], gameBoard[4], gameBoard[7]];
     col3 = [gameBoard[2], gameBoard[5], gameBoard[8]];
-
     allCols = [col1, col2, col3];
-
     return allCols.some(_setWinner);
   };
 
   const _checkDiagonal = () => {
     diag1 = [gameBoard[0], gameBoard[4], gameBoard[8]];
     diag2 = [gameBoard[2], gameBoard[4], gameBoard[6]];
-
     allDiags = [diag1, diag2];
-
     allDiags.some(_setWinner);
   };
 
   const _checkWinner = () => {
-    // console.log(_checkIfDraw());
+    _checkIfDraw();
     _checkColumns();
     _checkRows();
     _checkDiagonal();
-    if (winner == "p1") {
-      alert("Player 1 is a winner");
-    } else if (winner == "p2") {
-      alert("Player 2 is a winner");
-    }
-    // _declareWinner();
+    _announceWinner();
   };
 
   return {

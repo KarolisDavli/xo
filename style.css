@@ -35,8 +35,9 @@ img {
 }
 /* End of css reset */
 
-#content {
+#app {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -55,4 +56,8 @@ img {
   background-color: beige;
   border: 1px solid black;
   background-size: contain;
+}
+
+.btn {
+  margin: 3rem;
 }
