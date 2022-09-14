@@ -45,9 +45,9 @@ const Game = (() => {
     gameBoard = ["", "", "", "", "", "", "", "", ""];
     activePlayer = player1;
     winner = "";
+    app.firstElementChild.remove();
     const tile = document.getElementsByClassName("cell");
     const allTiles = [...tile];
-    console.log(allTiles);
     allTiles.map((tile) => tile.removeAttribute("style"));
     allTiles.map((tile) => (tile.textContent = ""));
   };
@@ -63,7 +63,6 @@ const Game = (() => {
 
   const takeTurn = (e) => {
     if (e.target.innerHTML === "") {
-      // console.log(e.target);
       e.target.textContent = activePlayer.playerSymbol;
       e.target.style.backgroundImage = `url('./img/${activePlayer.playerSymbol}mark.png')`;
       let PushIndex = e.target.getAttribute("index");
@@ -88,14 +87,7 @@ const Game = (() => {
   const _announceWinner = () => {
     const announcementText = document.createElement("h1");
     announcementText.textContent = `${winner} bitch`;
-    app.append(announcementText);
-    // if (winner == "p1") {
-    //   app.append(announcementText);
-    // } else if (winner == "p2") {
-    //   alert("Player 2 is a winner");
-    // } else if (_checkIfDraw() == true) {
-    //   alert("Draw");
-    // }
+    app.prepend(announcementText);
   };
 
   const _checkIfDraw = () => {
@@ -130,7 +122,9 @@ const Game = (() => {
     _checkColumns();
     _checkRows();
     _checkDiagonal();
-    winner != undefined && _announceWinner();
+    if (winner == "p1" || winner == "p2") {
+      _announceWinner();
+    }
   };
 
   return {
