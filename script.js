@@ -21,14 +21,6 @@ const Game = (() => {
 
   const renderGameBoard = () => {
     let count = 0;
-    board.textContent = "";
-    console.log(board.textContent);
-
-    console.log(board.innerHTML);
-    board.innerHTML = "";
-    console.log(board);
-    board.innerHTML = "";
-
     gameBoard.map((cell) => {
       const square = document.createElement("div");
       square.setAttribute("index", count);
@@ -52,10 +44,12 @@ const Game = (() => {
   const resetGame = () => {
     activePlayer = player1;
     winner = "";
+    const removeCells = document.querySelectorAll(".cell");
+    removeCells.forEach((i) => i.remove());
     gameBoard = ["", "", "", "", "", "", "", "", ""];
     let removeText = document.getElementById("announcement");
     removeText.remove();
-    _stopGame();
+
     renderGameBoard();
     document.getElementById("btn").disabled = true;
   };
@@ -84,15 +78,18 @@ const Game = (() => {
 
   const _setWinner = (threeInARow) => {
     if (threeInARow.every((i) => i == "x")) {
+      _stopGame();
       winner = activePlayer.playerName;
       return winner;
     } else if (threeInARow.every((i) => i == "o")) {
+      _stopGame();
       winner = activePlayer.playerName;
       return winner;
     }
   };
 
   const _announceWinner = () => {
+    _stopGame();
     const announcementText = document.createElement("h1");
     announcementText.setAttribute("id", "announcement");
     announcementText.textContent = `${winner} bitch`;
@@ -105,6 +102,7 @@ const Game = (() => {
   };
 
   const _announceDraw = () => {
+    _stopGame();
     document.getElementById("btn").disabled = false;
     const announcementText = document.createElement("h1");
     announcementText.setAttribute("id", "announcement");
@@ -149,9 +147,6 @@ const Game = (() => {
     const disabledCells = document.querySelectorAll(".cell");
     disabledCells.forEach((i) => {
       i.removeEventListener("click", takeTurn);
-      i.remove();
-      console.log(i.innerHTML);
-      console.log(i.textContent);
     });
   };
 
