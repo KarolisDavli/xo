@@ -17,11 +17,18 @@ const Game = (() => {
 
   let gameBoard = ["", "", "", "", "", "", "", "", ""];
   let activePlayer = player1;
-  let winner;
+  let winner = "";
 
   const renderGameBoard = () => {
     let count = 0;
-    renderResetButton();
+    board.textContent = "";
+    console.log(board.textContent);
+
+    console.log(board.innerHTML);
+    board.innerHTML = "";
+    console.log(board);
+    board.innerHTML = "";
+
     gameBoard.map((cell) => {
       const square = document.createElement("div");
       square.setAttribute("index", count);
@@ -36,20 +43,21 @@ const Game = (() => {
   const renderResetButton = () => {
     const resetButton = document.createElement("button");
     resetButton.textContent = "Reset Game";
-    resetButton.classList.add("btn");
+    resetButton.disabled = true;
+    resetButton.setAttribute("id", "btn");
     resetButton.addEventListener("click", resetGame);
     app.append(resetButton);
   };
 
   const resetGame = () => {
-    gameBoard = ["", "", "", "", "", "", "", "", ""];
     activePlayer = player1;
     winner = "";
-    app.firstElementChild.remove();
-    const tile = document.getElementsByClassName("cell");
-    const allTiles = [...tile];
-    allTiles.map((tile) => tile.removeAttribute("style"));
-    allTiles.map((tile) => (tile.textContent = ""));
+    gameBoard = ["", "", "", "", "", "", "", "", ""];
+    let removeText = document.getElementById("announcement");
+    removeText.remove();
+    _stopGame();
+    renderGameBoard();
+    document.getElementById("btn").disabled = true;
   };
 
   const setActivePlayer = () => {
@@ -86,12 +94,22 @@ const Game = (() => {
 
   const _announceWinner = () => {
     const announcementText = document.createElement("h1");
+    announcementText.setAttribute("id", "announcement");
     announcementText.textContent = `${winner} bitch`;
     app.prepend(announcementText);
+    document.getElementById("btn").disabled = false;
   };
 
   const _checkIfDraw = () => {
     return gameBoard.every((i) => i != "");
+  };
+
+  const _announceDraw = () => {
+    document.getElementById("btn").disabled = false;
+    const announcementText = document.createElement("h1");
+    announcementText.setAttribute("id", "announcement");
+    announcementText.textContent = "No winner bitch. Reset to play again";
+    app.prepend(announcementText);
   };
 
   const _checkRows = () => {
@@ -118,20 +136,32 @@ const Game = (() => {
   };
 
   const _checkWinner = () => {
-    _checkIfDraw();
+    _checkIfDraw() && _announceDraw();
     _checkColumns();
     _checkRows();
     _checkDiagonal();
-    if (winner == "p1" || winner == "p2") {
-      _announceWinner();
-    }
+    winner !== "" && _announceWinner();
+  };
+
+  const _stopGame = () => {
+    console.log("Game is stopped, dont press anything");
+    // board.innerHTML = "";
+    const disabledCells = document.querySelectorAll(".cell");
+    disabledCells.forEach((i) => {
+      i.removeEventListener("click", takeTurn);
+      i.remove();
+      console.log(i.innerHTML);
+      console.log(i.textContent);
+    });
   };
 
   return {
     activePlayer,
     renderGameBoard,
     setActivePlayer,
+    renderResetButton,
   };
 })();
 
 Game.renderGameBoard();
+Game.renderResetButton();
