@@ -49,6 +49,19 @@ img {
   gap: 8px;
 }
 
+#announcement {
+  margin-top: 3rem;
+}
+
+.input-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-box input {
+  margin: 1rem;
+}
+
 .cell {
   color: transparent;
   height: 150px;
@@ -58,6 +71,6 @@ img {
   background-size: contain;
 }
 
-#btn {
+#reset {
   margin: 3rem;
 }

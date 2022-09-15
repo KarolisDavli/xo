@@ -9,49 +9,83 @@ const Player = (name, symbol) => {
 };
 
 const Game = (() => {
-  const player1 = Player("p1", "x");
-  const player2 = Player("p2", "o");
-
   const board = document.getElementById("board");
   const app = document.getElementById("app");
+
+  const inputBox = document.createElement("div");
+  inputBox.classList.add("input-box");
+  const inputOne = document.createElement("input");
+  const inputTwo = document.createElement("input");
+  inputOne.type = "text";
+  inputOne.placeholder = "Player one name";
+  inputTwo.type = "text";
+  inputTwo.placeholder = "Player two name";
+
+  const player1 = Player("p1", "x");
+  const player2 = Player("p2", "o");
+  inputBox.append(inputOne, inputTwo);
+  app.append(inputBox);
+
+  const heading = document.createElement("h1");
+  heading.setAttribute("id", "announcement");
+  heading.textContent = "No winner yet";
+  app.append(heading);
 
   let gameBoard = ["", "", "", "", "", "", "", "", ""];
   let activePlayer = player1;
   let winner = "";
+  let gameOn = false;
 
   const renderGameBoard = () => {
     let count = 0;
-    gameBoard.map((cell) => {
-      const square = document.createElement("div");
-      square.setAttribute("index", count);
-      square.classList.add("cell");
-      square.addEventListener("click", takeTurn);
-      square.append(cell);
-      board.append(square);
-      count++;
-    });
+    player1.playerName = inputOne.value;
+    player2.playerName = inputTwo.value;
+    inputBox.style.display = "none";
+    if (gameOn != true) {
+      gameBoard.map((cell) => {
+        const square = document.createElement("div");
+        square.setAttribute("index", count);
+        square.classList.add("cell");
+        square.addEventListener("click", takeTurn);
+        square.append(cell);
+        board.append(square);
+        count++;
+      });
+    } else {
+      alert("Game already runnning");
+    }
+    gameOn = true;
   };
+
+  const getPlayerNames = () => {};
 
   const renderResetButton = () => {
     const resetButton = document.createElement("button");
     resetButton.textContent = "Reset Game";
     resetButton.disabled = true;
-    resetButton.setAttribute("id", "btn");
+    resetButton.setAttribute("id", "reset");
     resetButton.addEventListener("click", resetGame);
     app.append(resetButton);
   };
 
   const resetGame = () => {
     activePlayer = player1;
+    heading.textContent = `Previous winner: ${winner}`;
     winner = "";
     const removeCells = document.querySelectorAll(".cell");
     removeCells.forEach((i) => i.remove());
     gameBoard = ["", "", "", "", "", "", "", "", ""];
-    let removeText = document.getElementById("announcement");
-    removeText.remove();
-
+    gameOn = false;
     renderGameBoard();
-    document.getElementById("btn").disabled = true;
+    document.getElementById("reset").disabled = true;
+  };
+
+  const renderStartButton = () => {
+    const startButton = document.createElement("button");
+    startButton.textContent = "Start Game";
+    startButton.setAttribute("id", "start");
+    startButton.addEventListener("click", renderGameBoard);
+    app.append(startButton);
   };
 
   const setActivePlayer = () => {
@@ -80,21 +114,16 @@ const Game = (() => {
     if (threeInARow.every((i) => i == "x")) {
       _stopGame();
       winner = activePlayer.playerName;
-      return winner;
     } else if (threeInARow.every((i) => i == "o")) {
       _stopGame();
       winner = activePlayer.playerName;
-      return winner;
     }
   };
 
   const _announceWinner = () => {
     _stopGame();
-    const announcementText = document.createElement("h1");
-    announcementText.setAttribute("id", "announcement");
-    announcementText.textContent = `${winner} bitch`;
-    app.prepend(announcementText);
-    document.getElementById("btn").disabled = false;
+    heading.textContent = `${winner} bitch`;
+    document.getElementById("reset").disabled = false;
   };
 
   const _checkIfDraw = () => {
@@ -103,11 +132,8 @@ const Game = (() => {
 
   const _announceDraw = () => {
     _stopGame();
-    document.getElementById("btn").disabled = false;
-    const announcementText = document.createElement("h1");
-    announcementText.setAttribute("id", "announcement");
-    announcementText.textContent = "No winner bitch. Reset to play again";
-    app.prepend(announcementText);
+    document.getElementById("reset").disabled = false;
+    heading.textContent = "No winner bitch. Reset to play again";
   };
 
   const _checkRows = () => {
@@ -152,11 +178,11 @@ const Game = (() => {
 
   return {
     activePlayer,
-    renderGameBoard,
     setActivePlayer,
     renderResetButton,
+    renderStartButton,
   };
 })();
 
-Game.renderGameBoard();
 Game.renderResetButton();
+Game.renderStartButton();
